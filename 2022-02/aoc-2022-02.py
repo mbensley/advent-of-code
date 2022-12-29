@@ -1,4 +1,3 @@
-
 import os
 
 L, D, W = 0, 3, 6
@@ -19,7 +18,7 @@ def calc_round1(pair):
     return r_dict[p0][p1] + score_dict[p1]
 
 
-with open(os.getcwd() + '/2022-02/input.txt') as f:
-    pairs = [pair for pair in f.read().split('\n')]
+with open(os.getcwd() + '/2022-02/input-t.txt') as f:
+    pairs = f.read().splitlines()
     print('Part A: %i' % sum(map(calc_round1, pairs)))
     print('Part B: %i' % sum(map(lambda p: r2_dict[p], pairs)))
