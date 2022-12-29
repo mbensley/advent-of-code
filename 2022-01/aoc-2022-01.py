@@ -1,6 +1,3 @@
-# #cals per item, one per line
-# blank line in between each elf
-# who has the most calories
 import os
 import heapq
 
