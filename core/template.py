@@ -13,9 +13,8 @@ from functools import cache
 from math import floor
 from copy import deepcopy
 
-test = True
-no_file = False
-filename = 'X/input.txt' if test else 'X/input-X.txt'
+test, no_file = False, False
+filename = 'X/%s' % ('input-XX.txt' if test else 'input.txt')
 test_input = []
 with open(os.getcwd() + '/advent-of-code/' + filename) as f:
     input = test_input if test and no_file else f.read().splitlines()
