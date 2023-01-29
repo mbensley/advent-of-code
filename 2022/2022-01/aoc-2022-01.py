@@ -2,7 +2,7 @@ import os
 import heapq
 
 
-with open(os.getcwd() + '/2022-01/input.txt') as f:
+with open(os.getcwd() + '/2022/2022-01/input-t.txt') as f:
     cal_list = []
     for pack in f.read().split('\n\n'):
         cal_list.append(sum([int(item) for item in pack.split('\n')]))
