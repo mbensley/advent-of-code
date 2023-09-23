@@ -13,6 +13,8 @@ from functools import cache
 from math import floor
 from copy import deepcopy
 
+# https://docs.python.org/3/library/
+
 
 def inputfile():
     year_dir = '2015'
