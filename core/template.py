@@ -13,11 +13,21 @@ from functools import cache
 from math import floor
 from copy import deepcopy
 
-test, no_file = False, False
-filename = 'X/%s' % ('input-XX.txt' if test else 'input.txt')
-test_input = []
-with open(os.getcwd() + '/advent-of-code/' + filename) as f:
-    input = test_input if test and no_file else f.read().splitlines()
+
+def inputfile():
+    year_dir = '2015'
+    filename = os.path.join(year_dir, 'input.txt')
+    return os.path.join(os.getcwd(), filename)
+
+
+def getinput(f, test):
+    test_input = ['2x3x4', '1x1x10']
+    return test_input if test else f.read()
+
+
+test = False
+with open(inputfile()) as f:
+    input = getinput(f, test)
 
     print('Part A: %i' % 0)
     print('Part B: %i' % 1)
