@@ -1,3 +1,6 @@
+import os
+
+
 def inputfile():
     year_dir = '2015'
     filename = os.path.join(year_dir, 'input.txt')
