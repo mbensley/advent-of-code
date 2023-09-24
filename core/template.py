@@ -1,12 +1,14 @@
 # Timings: Part A: 3:00 / Part B: 1:30
-import os
 from collections import defaultdict
 from collections import deque
-import heapq
-import string
-import queue
 import ast
+import hashlib
+import heapq
+import os
+import queue
 import re
+import string
+import sys
 from itertools import product
 from itertools import combinations
 from functools import cache
