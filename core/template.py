@@ -26,7 +26,7 @@ def inputfile():
 
 def getinput(f, test):
     test_input = ['2x3x4', '1x1x10']
-    return test_input if test else f.read()
+    return test_input if test else f.read().splitlines()
 
 
 test = False
