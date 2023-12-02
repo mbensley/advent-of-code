@@ -4,7 +4,7 @@ import os
 
 def inputfile():
     year_dir = '2023'
-    filename = os.path.join('advent-of-code', year_dir, 'input.txt')
+    filename = os.path.join(year_dir, 'input.txt')
     return os.path.join(os.getcwd(), filename)
 
 
