@@ -19,10 +19,7 @@ from copy import deepcopy
 
 
 def inputfile():
-    year_dir = '2015'
-    filename = os.path.join(year_dir, 'input.txt')
-    return os.path.join(os.getcwd(), filename)
-
+    return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 def getinput(f, test):
     test_input = ['2x3x4', '1x1x10']

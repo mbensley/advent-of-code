@@ -3,9 +3,7 @@ import os
 
 
 def inputfile():
-    year_dir = '2023'
-    filename = os.path.join(year_dir, 'input.txt')
-    return os.path.join(os.getcwd(), filename)
+    return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 
 def getinput(f, test):
