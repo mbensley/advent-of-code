@@ -1,19 +1,5 @@
-# Timings: Part A: 3:00 / Part B: 1:30
-from collections import defaultdict
-from collections import deque
-import ast
-import hashlib
-import heapq
+# Timings: Part A: 4:00 / Part B: 2:00
 import os
-import queue
-import re
-import string
-import sys
-from itertools import product
-from itertools import combinations
-from functools import cache
-from math import floor
-from copy import deepcopy
 
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
