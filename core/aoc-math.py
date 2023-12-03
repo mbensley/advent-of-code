@@ -22,3 +22,6 @@ def get_ldist(sx, sy, bx, by):
 def tsum(t0, t1, subtract=False):
     # Tuple Sum/Difference
     return [x+y if not subtract else x-y for x, y in zip(t0[:], t1[:])]
+
+def xor(a, b):
+    return (a and not b) or (not a and b)

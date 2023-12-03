@@ -21,14 +21,13 @@ from copy import deepcopy
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
 
-def getinput(f, test):
+def getinput(f, test=False):
     test_input = ['2x3x4', '1x1x10']
     return test_input if test else f.read().splitlines()
 
 
-test = False
 with open(inputfile()) as f:
-    input = getinput(f, test)
+    input = getinput(f)
 
     print('Part A: %i' % 0)
     print('Part B: %i' % 1)
