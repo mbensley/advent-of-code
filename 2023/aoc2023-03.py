@@ -1,5 +1,6 @@
 from collections import defaultdict
 import os
+
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
 
