@@ -1,4 +1,4 @@
-# Timings: Part A: 3:00 / Part B: 1:30
+# Timings: Part A: XX:00 / Part B: XX:00
 from collections import defaultdict
 from collections import deque
 import ast
