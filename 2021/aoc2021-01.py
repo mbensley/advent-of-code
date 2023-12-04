@@ -1,28 +1,8 @@
 # Timings: Part A: 3:00 / Part B: 1:30
-from collections import defaultdict
-from collections import deque
-import ast
-import hashlib
-import heapq
 import os
-import queue
-import re
-import string
-import sys
-from itertools import product
-from itertools import combinations
-from functools import cache
-from math import floor
-from copy import deepcopy
-
-# https://docs.python.org/3/library/
-
 
 def inputfile():
-    year_dir = '2020'
-    filename = os.path.join('advent-of-code', year_dir, 'input.txt')
-    return os.path.join(os.getcwd(), filename)
-
+    return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 def getinput(f, test):
     test_input = [199,
@@ -60,6 +40,5 @@ with open(inputfile()) as f:
         last = s
         dlist = [dlist[1], dlist[2], 0]
 
-    # print(input)
     print('Part A: %i' % (counta-1))
     print('Part B: %i' % (countb))
