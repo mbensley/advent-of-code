@@ -1,5 +1,6 @@
 # Timings: Part A: 9:00 / Part B: 02:15:00
 import os
+import sys
 
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
@@ -27,7 +28,6 @@ def calcLCM(x,y):
     return (x*y) // computeGCD(x,y)
 
 def be_a_ghost(start, end, steps, dirmap):
-
     curloc = [key for key in dirmap.keys() if key[-1] == start]
     # build the full list of visited locations given the input
     start2z = [] # from each start, look at all reachable Zs and calc the step differences
@@ -47,12 +47,17 @@ def be_a_ghost(start, end, steps, dirmap):
                     d[loc].append(stepcount)
                 else:
                     d[loc] = [stepcount]
-                    start2z[s_index] = d[loc]
+                    start2z[s_index] = d
     # now, we have a start2z with all possible z locations and the delta for each cycle start time
-    # calc the LCM of everything
+    # It turns out for the input, len(d.keys()) == 1 so there's only ever 1 d range to check
+    # Now, calculate the LCM of everything
     lcm = 1
-    for y1,y2 in start2z:
-        lcm = calcLCM(lcm,y2-y1)
+    for d in start2z:
+        min_lcm = sys.maxsize
+        for y1,y2 in d.values():
+            new_lcm = calcLCM(lcm,y2-y1)
+            min_lcm = min(min_lcm, new_lcm)
+        lcm = min_lcm
     return lcm
 
 with open(inputfile()) as f:
