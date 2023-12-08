@@ -8,6 +8,9 @@ def computeGCD(x, y):
             gcd = i
     return gcd
 
+def lcm(x,y):
+    return (x*y) / computeGCD(x,y)
+
 
 def get_mdist(sx, sy, bx, by):
     # https://en.wikipedia.org/wiki/Taxicab_geometry
