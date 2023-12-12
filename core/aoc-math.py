@@ -1,4 +1,7 @@
+import math
+
 def computeGCD(x, y):
+    # use math.gcd(integer iterable)!
     if x > y:
         small = y
     else:
@@ -9,6 +12,7 @@ def computeGCD(x, y):
     return gcd
 
 def lcm(x,y):
+    # use math.lcm(integer iterable)
     return (x*y) / computeGCD(x,y)
 
 
