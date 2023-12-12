@@ -29,6 +29,17 @@ def tsum(t0, t1, subtract=False):
 def xor(a, b):
     return (a and not b) or (not a and b)
 
+# Shoelace Formula: https://en.wikipedia.org/wiki/Shoelace_formula
+# Sum over all the points that make up the polygon/route
+def shoelace(path):
+    sum = 0
+    for i in range(len(path)):
+        x1, y1 = path[i]
+        x2, y2 = path[(i+1) % len(path)]
+        sum += x1 * y2 - y1 * x2
+    area = abs(sum / 2)
+    return 1 + area - len(path) / 2
+
 # Grid Things
 def prettyprint(grid, maxx, maxy):
     out = ''
