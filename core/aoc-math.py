@@ -45,7 +45,7 @@ def shoelace(path):
     return 1 + area - len(path) / 2
 
 # Grid Things
-def prettyprint(grid, maxx, maxy):
+def grid_print(grid, maxx, maxy):
     out = ''
     for y in range(maxy):
         for x in range(maxx):
@@ -53,7 +53,15 @@ def prettyprint(grid, maxx, maxy):
         out += '\n'
     print(out)
 
-def count(grid, maxx, maxy, sym):
+def grid_hash(grid, cols, rows):
+    out = ''
+    for r in range(rows):
+        for c in range(cols):
+            out += grid[(r,c)]
+        out += '\n'
+    return out
+
+def grid_count(grid, maxx, maxy, sym):
     ct = 0
     for y in range(maxy):
         for x in range(maxx):
@@ -61,21 +69,18 @@ def count(grid, maxx, maxy, sym):
                 ct += 1
     return ct
 
-def flood(grid, x, y, mx,my, sym='.', osym = 'O'):
+def grid_flood(grid, x, y, mx,my, sym='.', osym = 'O'):
     def getcons(xx,yy, seen):
         # foundout = False
         c = []
-        #print('next start ', xx, yy)
         dirs = [(xx,yy-1), (xx,yy+1), (xx+1,yy), (xx-1, yy)]
         for d in dirs:
             xx,yy = d
             if xx < -1 or yy < -1 or xx > mx or yy > my:
                 continue
             if grid[d] in sym and d not in seen:
-                #print('appending ', grid[d])
                 c.append(d)
-            #if grid[d] in osym: foundout = True
-        return c#, foundout
+        return c
 
     seen = []
     connections = getcons(x,y, seen)
@@ -85,6 +90,4 @@ def flood(grid, x, y, mx,my, sym='.', osym = 'O'):
         cs = getcons(ncx,ncy,seen)
         connections.extend(cs)
         seen.extend(cs)
-        #foundout = foundout or fo
-    #print('seen: ', seen)
-    return seen#, foundout
+    return seen
