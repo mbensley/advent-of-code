@@ -1,4 +1,6 @@
 import math
+from heapq import heappush, heappop
+
 
 def computeGCD(x, y):
     # use math.gcd(integer iterable)!
@@ -91,3 +93,38 @@ def grid_flood(grid, x, y, mx,my, sym='.', osym = 'O'):
         connections.extend(cs)
         seen.extend(cs)
     return seen
+
+def grid_update_loc(loc, dir):
+    dmap = {UP: (0,-1), DOWN: (0,1), RIGHT: (1,0), LEFT: (-1,0)}
+    x,y = loc
+    xx,yy = dmap[dir]
+    return (x+xx, y+yy)
+
+UP, RIGHT, LEFT, DOWN = '^', '>', '<', 'v'
+# min/max_dist: how far must/can you travel in one direction
+def grid_dijkstra(grid, start_point, end_point, min_dist, max_dist):
+    def get_new_dir(p, d):
+        if d in (UP, DOWN): return (LEFT, RIGHT)
+        return (UP, DOWN)
+
+    visited = {} # (point, dir): cost
+    point_q = []
+    initial_cost = 0
+    for dir in (UP, DOWN, LEFT, RIGHT):
+        heappush(point_q, (initial_cost, start_point, dir))
+    while point_q:
+        cost, point, pdir = heappop(point_q)
+        if (point, pdir) in visited and visited[(point, pdir)] <= cost:
+           continue
+        if point == end_point: return cost
+        visited[(point, pdir)] = cost
+        for newdir in get_new_dir(point, pdir):
+            new_point = point
+            new_cost = cost
+            for icap in range(max_dist):
+                new_point = grid_update_loc(new_point, newdir)
+                if new_point not in grid: break
+                new_cost += grid[new_point]
+                if icap+1 >= min_dist:
+                    heappush(point_q, (new_cost, new_point, newdir))
+    raise # No solution :(
