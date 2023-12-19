@@ -63,6 +63,7 @@ def calc_total(workflows, start, rdict):
             product *= ((v[1]+1) - (v[0]))
         return product
     
+    # This only works if splitval is actually in the range!
     def splitrange(splitval, r, splitsym):
         rmin, rmax = r
         midpoint = splitval - 1 if splitsym == '<' else splitval
@@ -85,19 +86,13 @@ def calc_total(workflows, start, rdict):
             key, val = rule.split('>')
             val = int(val)
             # split the range into valid and invalid
-            l,r = splitrange(val, rdict[key], '>')
-            validdict[key] = r
             # The invalid range just resets the range in rdict and continues  
-            rdict[key] = l
+            rdict[key], validdict[key] = splitrange(val, rdict[key], '>')
             total += calc_total(workflows, pass_label, validdict)
         if '<' in rule:
             key, val = rule.split('<')
             val = int(val)
-            # split the range into valid and invalid
-            l,r = splitrange(val, rdict[key], '<')
-            validdict[key] = l
-            # The invalid range just resets the range in rdict and continues
-            rdict[key] = r
+            validdict[key], rdict[key]  = splitrange(val, rdict[key], '<')
             total += calc_total(workflows, pass_label, validdict)
     raise # everything should resolve to an A or R eventually
 
