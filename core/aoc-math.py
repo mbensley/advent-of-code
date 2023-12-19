@@ -37,6 +37,8 @@ def xor(a, b):
 
 # Shoelace Formula: https://en.wikipedia.org/wiki/Shoelace_formula
 # Sum over all the points that make up the polygon/route
+# Given an ascii-art 'thick' path around a bounding region, this
+# returns the A term from Pick's Theorem. https://en.wikipedia.org/wiki/Pick%27s_theorem
 def shoelace(path):
     sum = 0
     for i in range(len(path)):
@@ -44,7 +46,13 @@ def shoelace(path):
         x2, y2 = path[(i+1) % len(path)]
         sum += x1 * y2 - y1 * x2
     area = abs(sum) // 2
-    #return 1 + area - len(path) / 2 AoC 2023 Day 10 and 18 to add perimiter
+
+def get_full_area_with_perimiter(path):
+    # Pick's Theoem is A = i + b/2 -1
+    # i = A + 1 - b/2
+    A = shoelace(path)
+    i = A + 1 - len(path) / 2
+    return i + len(path) # internal points 
 
 # Grid Things
 def grid_print(grid, maxx, maxy):

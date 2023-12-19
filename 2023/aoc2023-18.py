@@ -62,8 +62,16 @@ def shoelace(path):
         x1, y1 = path[i]
         x2, y2 = path[(i+1) % len(path)]
         sum += x1 * y2 - y1 * x2
-    area = abs(sum / 2)
-    return 1 + area - (len(path)) / 2
+    area = abs(sum // 2)
+    return area
+
+def get_full_area_with_perimiter(path):
+    # Pick's Theoem is A = i + b/2 -1
+    # i = A + 1 - b/2
+    if path[0] == path[-1]: path.pop()
+    A = shoelace(path)
+    i = A + 1 - (len(path) // 2)
+    return i + len(path) # internal points 
 
 with open(inputfile()) as f:
     input = getinput(f)
@@ -71,6 +79,5 @@ with open(inputfile()) as f:
     # Build the route
     route,route_len = get_route(input)
     routeb, routeb_len = get_routeb(input)
-
-    print('Part A: %i' % (1+shoelace(route)+route_len) )
-    print('Part B: %i' % (1+shoelace(routeb)+routeb_len))
+    print('Part A: %i' % (get_full_area_with_perimiter(route)))
+    print('Part B: %i' % (get_full_area_with_perimiter(routeb)))
