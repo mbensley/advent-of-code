@@ -1,29 +1,13 @@
-# Timings: Part A: XX:00 / Part B: XX:00
-from collections import defaultdict
-from collections import deque
-import ast
-import hashlib
-import heapq
-import math
+# Timings: Part A: 20:00 / Part B: Untimed
 import os
-import queue
-import re
-import string
-import sys
-from itertools import product
-from itertools import combinations
-from functools import cache
-from math import floor
 from copy import deepcopy
-
-# https://docs.python.org/3/library/
 
 
 def inputfile():
-    return os.path.join(os.path.dirname(__file__), 'input-s.txt')
+    return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 def getinput(f, test=False):
-    test_input = ['2x3x4', '1x1x10']
+    test_input = 'in{a<3:m,R}\nm{m<3:x,R}\nx{x<3:s,R}\ns{s<3:A,R}\n\n{x=1,m=1,s=1,a=1}'
     return test_input if test else f.read()
 
 def build_workflows(input):
@@ -72,47 +56,50 @@ def calc(part, workflows, start):
                     if next_label == 'R': return False
                     return calc(part, workflows, next_label)
 
-def calc_combinations(workflows, start, minmaxdict):
-    def c(values):
-        cs = 1
-        for value in values:
-            cs *= (value[1] - value[0])
-        return cs
+def calc_total(workflows, start, rdict):
+    def c(d):
+        product = 1
+        for v in d.values():
+            product *= ((v[1]+1) - (v[0]))
+        return product
+    
+    def splitrange(splitval, r, splitsym):
+        rmin, rmax = r
+        midpoint = splitval - 1 if splitsym == '<' else splitval
+        lmin,lmax = rmin,midpoint
+        rmin,rmax = midpoint+1,rmax
+        return [lmin,lmax],[rmin,rmax]
+    
     total = 0
+    if start == 'A': return c(rdict)
+    if start == 'R': return 0
     for test in workflows[start]:
-        print(test)
-        if test == 'A':
-            total += c(minmaxdict.values())
-            break
-        if test == 'R': return 0
-        if ':' not in test:
-            total += calc_combinations(workflows, test, minmaxdict.copy())
-            continue
-        rule, next_label = test.split(':')
+        # for each test, split the range into valid/invalid
+        if test == 'A': return total + c(rdict) # everything is valid and we're done
+        if test == 'R': return total # nothing is valid and we're done
+        validdict = deepcopy(rdict)
+        # keep going, send all ranges to the next workflow
+        if ':' not in test: return total + calc_total(workflows, test, validdict)
+        rule, pass_label = test.split(':')
         if '>' in rule:
-            prop, target = rule.split('>')
-            newdict = minmaxdict.copy()
-            tmin,tmax = newdict[prop]
-            if int(target) > tmax: continue
-            if int(target) > tmin: newdict[prop][0] = int(target)
-            if next_label == 'A':
-                total += c(newdict.values())
-                continue
-            if next_label == 'R': continue
-            
-            total += calc_combinations(workflows, next_label, newdict)
+            key, val = rule.split('>')
+            val = int(val)
+            # split the range into valid and invalid
+            l,r = splitrange(val, rdict[key], '>')
+            validdict[key] = r
+            # The invalid range just resets the range in rdict and continues  
+            rdict[key] = l
+            total += calc_total(workflows, pass_label, validdict)
         if '<' in rule:
-            prop, target = rule.split('<')
-            newdict = minmaxdict.copy()
-            tmin,tmax = newdict[prop]
-            if int(target) < tmin: continue
-            if int(target) > tmax: newdict[prop][0] = int(target)
-            if next_label == 'A':
-                total += c(newdict.values())
-                continue
-            if next_label == 'R': continue
-            total += calc_combinations(workflows, next_label, newdict)
-    return total
+            key, val = rule.split('<')
+            val = int(val)
+            # split the range into valid and invalid
+            l,r = splitrange(val, rdict[key], '<')
+            validdict[key] = l
+            # The invalid range just resets the range in rdict and continues
+            rdict[key] = r
+            total += calc_total(workflows, pass_label, validdict)
+    raise # everything should resolve to an A or R eventually
 
 with open(inputfile()) as f:
     input = getinput(f)
@@ -120,14 +107,16 @@ with open(inputfile()) as f:
     parts = build_parts(p)
     workflows = build_workflows(w)
     tot_ratings = 0
+    start_workflow = 'in'
+
+    # Part A
     for part in parts:
-        if calc(part, workflows, 'in'):
+        if calc(part, workflows, start_workflow):
             tot_ratings += sum(part.values())
 
-
     print('Part A: %i' % tot_ratings)
-    
-    def get_range(prop):
-        return 
-    print('Part B: %i' % calc_combinations(workflows, 'in',
-                                           {'x': [1, 4000], 'm': [1, 4000], 'a': [1, 4000], 's':[1, 4000]}))
+    print('Part B: %i' % calc_total(workflows, start_workflow,
+                                           {'x': [1, 4000],
+                                            'm': [1, 4000],
+                                            'a': [1, 4000],
+                                            's':[1, 4000]}))
