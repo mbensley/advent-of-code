@@ -43,8 +43,8 @@ def shoelace(path):
         x1, y1 = path[i]
         x2, y2 = path[(i+1) % len(path)]
         sum += x1 * y2 - y1 * x2
-    area = abs(sum / 2)
-    return 1 + area - len(path) / 2
+    area = abs(sum) // 2
+    #return 1 + area - len(path) / 2 AoC 2023 Day 10 and 18 to add perimiter
 
 # Grid Things
 def grid_print(grid, maxx, maxy):
