@@ -54,6 +54,14 @@ def get_full_area_with_perimiter(path):
     i = A + 1 - len(path) / 2
     return i + len(path) # internal points 
 
+# From the 0th, 1st, and 2nd point
+# ans is a triple of values for f(0), f(1), and f(2)
+def calc_quadratic_from_3_points(ans, x):
+    a = (ans[0] - 2*ans[1] + ans[2]) / 2
+    b = (-3*ans[0] + 4*ans[1] - ans[2]) / 2
+    c = ans[0]
+    return a*x*x + b*x + c 
+
 # Grid Things
 def grid_print(grid, maxx, maxy):
     out = ''
