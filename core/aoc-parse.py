@@ -1,5 +1,7 @@
 import re
 
+# https://pythex.org/
+# https://regexper.com/
 
 def parse(line):
     print(line)

@@ -1,6 +1,7 @@
 import math
 from heapq import heappush, heappop
 
+# https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 
 def computeGCD(x, y):
     # use math.gcd(integer iterable)!
