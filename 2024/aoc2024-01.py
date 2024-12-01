@@ -15,34 +15,32 @@ def getinput(f, test):
         '3   3']
     return test_input if test else f.read().splitlines()
 
-def parta(input):
-    totala = 0
+def calc_similarity_a(input):
+    total_delta = 0
     left_list, right_list = [], []
     for line in input:
-        l,r = line.split()
+        l, r = line.split()
         left_list.append(int(l))
         right_list.append(int(r))
     left_list.sort()
     right_list.sort()
     for idx, l in enumerate(left_list):
-        r = right_list[idx]
-        totala += abs(l-r)
-    return totala
+        total_delta += abs(l - right_list[idx])
+    return total_delta
 
-def partb(input):
-    totalb = 0
+def calc_similarity_b(input):
+    total_delta = 0
     left_list, right_map = [], defaultdict(int)
     for line in input:
-        l,r = line.split()
+        l, r = line.split()
         left_list.append(int(l))
         right_map[int(r)] += 1
     for l in left_list:
-        totalb += l * right_map[l]
-    return totalb
+        total_delta += l * right_map[l]
+    return total_delta
 
 test = False
 with open(inputfile()) as f:
     input = getinput(f, test)
-
-    print('Part A: %i' % parta(input))
-    print('Part B: %i' % partb(input))
+    print('Part A: %i' % calc_similarity_a(input))
+    print('Part B: %i' % calc_similarity_b(input))
