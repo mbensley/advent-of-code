@@ -1,6 +1,5 @@
 # Real input files
-input.txt
-input-s.txt
+input*.txt
 experimental/*
 
 # Byte-compiled / optimized / DLL files
