@@ -17,3 +17,13 @@ def parse_blueprint(line: str):
     id, oreOreR, clayOreR, obsOreR, obsClayR, geoOreR, geoObsR = re.findall(
         r'(\d+)', line)
     return (int(x) for x in (id, oreOreR, clayOreR, obsOreR, obsClayR, geoOreR, geoObsR))
+
+
+def parse_iterate(input, regex_list):
+    total = 0
+    for line in input:
+        for token in re.finditer('|'.join(regex_list), line):
+            if token.group(0) == 'regex_string':
+                print(token)
+                total += 1
+    return total
