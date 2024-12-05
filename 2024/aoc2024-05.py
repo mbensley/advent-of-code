@@ -4,7 +4,7 @@ def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 def getinput(f, test=False):
-    test_input = ['2x3x4', '1x1x10']
+    test_input = ['']
     return test_input if test else f.read()
 
 def is_valid(rules, update):
@@ -30,10 +30,8 @@ def sum_invalid_mids(rules, updates):
         valid, rule = is_valid(rules, update)
         if not valid:
             while not valid:
-                i0 = update.index(rule[0])
-                i1 = update.index(rule[1])
-                update[i0] = rule[1]
-                update[i1] = rule[0]
+                update[update.index(rule[0])] = rule[1]
+                update[update.index(rule[1])] = rule[0]
                 valid, rule = is_valid(rules, update)
             total += int(update[len(update)//2])
     return total
