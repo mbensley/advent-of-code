@@ -48,16 +48,17 @@ def get_new_grid(grid, x, y):
     new_grid[(x,y)] = CRATE
     return new_grid
 
-def count_cycles(input, grid):
+def count_cycles(input, grid, start):
     cycle_count, try_count = 0, 0
-    for y, line in enumerate(input):
-        for x, val in enumerate(line):
-            if grid[(x,y)] == EMPTY:
-                try_count += 1
-                new_grid = get_new_grid(grid, x, y)
-                if sim_guard(new_grid, start)[1]:
-                    cycle_count += 1
-                print('Cycle count: %i of %i' % (try_count, (len(input)*len(line))), end='\r')
+    # Note: searching only reachable locations saves 80% of runtime (~25 seconds)
+    reachable_locations = set(x for (x,y) in sim_guard(grid, start)[0])
+    for x,y in reachable_locations:
+        if grid[(x,y)] == EMPTY:
+            try_count += 1
+            new_grid = get_new_grid(grid, x, y)
+            if sim_guard(new_grid, start)[1]:
+                cycle_count += 1
+            print('Cycle count: %i of %i' % (try_count, len(reachable_locations)), end='\r')
     print('                                 ', end='\r') # blank out the progress counter
     return cycle_count
 
@@ -74,4 +75,4 @@ with open(inputfile()) as f:
                 grid[start] = '.'
     
     print('Part A: %i' % count_unique_locations(sim_guard(grid, start)[0]))
-    print('Part B: %i' % count_cycles(input, grid))
+    print('Part B: %i' % count_cycles(input, grid, start))
