@@ -37,8 +37,7 @@ def has_valid_solution(total, operands, oplist):
     # generate combinations of len(op_list) - 1 operations then execute them
     combinations = product(oplist, repeat=len(operand_list)-1)
     for operator_list in combinations:
-        c = calc(operand_list.copy(), list(operator_list))
-        if  c == total:
+        if calc(operand_list.copy(), list(operator_list)) == total:
             return True
     return False
 
