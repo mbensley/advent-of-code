@@ -69,13 +69,14 @@ def defrag_b(file_list, free_list, file_size_list, file_idx_list):
         max_idx = file_idx_list[id]
         free_list_idx = available_space(file_size_list, free_list, id, max_idx)
         if free_list_idx is None: continue
+        _, file_list_idx = free_list[free_list_idx]
         update_free_list(free_list, free_list_idx, file_size_list[id])
         remove_file(file_list, id)
-        _, file_list_idx = free_list[free_list_idx]
         add_file(file_list, file_size_list, id, file_list_idx)
     
 with open(inputfile()) as f:
     input = getinput(f)[0]
+
     file_list_a, _, _, _= build_file_list(input)
     defrag_a(file_list_a)
     print('Part A: %i' % checksum(file_list_a))
