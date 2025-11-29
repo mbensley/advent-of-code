@@ -15,6 +15,7 @@ from itertools import combinations
 from functools import cache
 from math import floor
 from copy import deepcopy
+from typing import TextIO
 
 # https://docs.python.org/3/library/
 
@@ -22,7 +23,7 @@ from copy import deepcopy
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
 
-def getinput(f, test=False):
+def getinput(f: TextIO, test: bool = False) -> list[str]:
     test_input = ['2x3x4', '1x1x10']
     return test_input if test else f.read().splitlines()
 
