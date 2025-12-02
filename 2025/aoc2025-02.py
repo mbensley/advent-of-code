@@ -1,29 +1,13 @@
 # Timings: Part A: XX:00 / Part B: XX:00
-from collections import defaultdict
-from collections import deque
-import ast
-import hashlib
-import heapq
-import math
 import os
-import queue
-import re
-import string
-import sys
-from itertools import product
-from itertools import combinations
-from functools import cache
-from math import floor
-from copy import deepcopy
 from typing import TextIO
 
 # https://docs.python.org/3/library/
 
-
 def inputfile():
     return os.path.join(os.path.dirname(__file__), 'input.txt')
 
-def getinput(f: TextIO, test: bool = False) -> list[str]:
+def getinput(f: TextIO, test: bool = True) -> list[str]:
     test_input = ['11-22,95-115'] # A: 132, B: 243
     return test_input if test else f.read().splitlines()
 
