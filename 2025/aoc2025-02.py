@@ -57,8 +57,6 @@ with open(inputfile()) as f:
     for l,r in ranges:
         pw_sum_a += get_num_repeats(int(l),int(r))
         pw_sum_b += get_num_repeats_b(int(l),int(r))
-    #print(ranges)
-
 
     print('Part A: %i' % pw_sum_a)
     print('Part B: %i' % pw_sum_b)
