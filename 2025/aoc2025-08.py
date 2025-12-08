@@ -2,7 +2,7 @@ import os
 import math
 
 # --- Constants ---
-NUM_POINTS = 1000
+NUM_POINTS = 10
 NUM_SETS = 3
 
 def _parse_points(input_path):
