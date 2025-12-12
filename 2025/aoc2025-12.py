@@ -118,11 +118,12 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
 
     # Define Move abstraction
     class Move:
-        def __init__(self, name, variations, cost, area):
+        def __init__(self, name, variations, cost, area, id=None):
             self.name = name
             self.variations = variations
             self.cost = cost # Counter {sid: count}
             self.area = area
+            self.id = id
         
         def can_afford(self, current_counts):
             for sid, req in self.cost.items():
@@ -161,7 +162,8 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
             name=f"Shape {sid}",
             variations=shape_variations_map[sid],
             cost={sid: 1},
-            area=shape_areas[sid]
+            area=shape_areas[sid],
+            id=sid
         )
         moves.append(m)
 
@@ -203,7 +205,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
             nr, nc = r + dr, c + dc
             if not (0 <= nr < height and 0 <= nc < width):
                 return False
-            if grid[nr][nc]:
+            if grid[nr][nc] is not False:
                 return False
         return True
 
@@ -222,7 +224,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
         components = []
         for r in range(height):
             for c in range(width):
-                if not grid[r][c] and (r, c) not in visited:
+                if grid[r][c] is False and (r, c) not in visited:
                     comp = set()
                     stack = [(r, c)]
                     visited.add((r, c))
@@ -230,7 +232,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
                     while stack:
                         cr, cc = stack.pop()
                         for nr, nc in [(cr+1, cc), (cr-1, cc), (cr, cc+1), (cr, cc-1)]:
-                            if 0 <= nr < height and 0 <= nc < width and not grid[nr][nc] and (nr, nc) not in visited:
+                            if 0 <= nr < height and 0 <= nc < width and grid[nr][nc] is False and (nr, nc) not in visited:
                                 visited.add((nr, nc))
                                 comp.add((nr, nc))
                                 stack.append((nr, nc))
@@ -304,7 +306,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
         empty_cell = None
         for r in range(height):
             for c in range(width):
-                if not grid[r][c]:
+                if grid[r][c] is False:
                     empty_cell = (r, c)
                     break
             if empty_cell: break
@@ -322,7 +324,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
                         origin_r = er - dr
                         origin_c = ec - dc
                         if can_place(origin_r, origin_c, var):
-                            place(origin_r, origin_c, var, True)
+                            place(origin_r, origin_c, var, move.id)
                             move.reduce_counts(remaining_counts)
                             if solve(skips_used):
                                 return True
@@ -331,7 +333,7 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
                             
         # Skip logic
         if skips_used < max_skips:
-            grid[er][ec] = True
+            grid[er][ec] = 'SKIPPED'
             if solve(skips_used + 1):
                 return True
             grid[er][ec] = False
@@ -359,21 +361,92 @@ def solve_region(width, height, shape_counts, all_shapes, region_idx, **kwargs):
     # That is safe and robust without changing signature.
     
     if success:
-        if kwargs.get('return_grid'):
-            # Return tuple
-            return (True, grid)
-        return (True, steps_taken)
+        return (True, steps_taken, grid)
     
-    return (False, steps_taken)
+    return (False, steps_taken, None)
 
-def solve_a(lines):
+def generate_html(grid, width, height, region_id):
+    filename = f"region_{region_id}.html"
+    
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            .grid {{
+                display: grid;
+                grid-template-columns: repeat({width}, 20px);
+                grid-gap: 1px;
+                background-color: #ccc;
+                width: fit-content;
+                border: 1px solid #999;
+            }}
+            .cell {{
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: sans-serif;
+                font-size: 10px;
+                color: #fff;
+                font-weight: bold;
+                text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            }}
+        </style>
+    </head>
+    <body>
+        <h1>Region {region_id}</h1>
+        <div class="grid">
+    """
+    
+    # Generate colors for IDs
+    import random
+    random.seed(42)
+    colors = {}
+    
+    # Flatten grid to find all unique IDs first to ensure consistent coloring?
+    # No, seed(42) handles consistency enough for now.
+    
+    for r in range(height):
+        for c in range(width):
+            val = grid[r][c]
+            if val is False:
+                color = "#eee" # Empty/Background
+                text = "."
+            elif val == 'SKIPPED':
+                color = "#777" # Skipped/Wasted
+                text = "s"
+            else:
+                if val not in colors:
+                    colors[val] = f"hsl({random.randint(0, 360)}, 70%, 50%)"
+                color = colors[val]
+                text = str(val)
+                
+            html += f'<div class="cell" style="background-color: {color};" title="{text}">{text}</div>'
+            
+    html += """
+        </div>
+    </body>
+    </html>
+    """
+    
+    with open(filename, 'w') as f:
+        f.write(html)
+    print(f"  -> Generated visualization: {filename}")
+
+def solve_a(lines, target_region=None):
     shapes, regions = parse_input(lines)
     print(f"Parsed {len(shapes)} shapes and {len(regions)} regions.")
     
     total_successful = 0
-    max_steps_successful = 0
+    min_steps_successful = 495 # Start with the known max (or any upper bound)
+    best_region_idx = -1
     
     for i, r in enumerate(regions):
+        if target_region is not None and i != target_region:
+            continue
+            
         width, height = r['width'], r['height']
         counts = r['counts']
         print(f"Solving region {i}: {width}x{height} with counts {counts}...")
@@ -398,21 +471,39 @@ def solve_a(lines):
              print(f"  -> FAILED (Impossible: Shape Area {total_shape_area} > Region Area {width * height})")
              continue 
 
-        # User Assumption: If constraints hold, try to solve with step limit
-        # Limit set to 495 based on profiling (max steps in successful 10k runs was 495).
-        success, _ = solve_region(width, height, counts, shapes, i, max_steps=495)
+        # User Assumption: If constraints hold, try to solve with dynamic step limit
+        # We start with 495. If we find a better one, we lower the limit.
+        success, steps, grid = solve_region(width, height, counts, shapes, i, max_steps=min_steps_successful)
         
         if success:
-            print(f"  -> SUCCESS")
+            print(f"  -> SUCCESS (steps={steps})")
             total_successful += 1
+            if steps < min_steps_successful:
+                min_steps_successful = steps
+                best_region_idx = i
+                print(f"  !! New Minimum Steps Found: {min_steps_successful} (Region {best_region_idx}) !!")
+            
+            # Generate HTML if targeting a specific region (or maybe always if requested?)
+            # User request: "when the user uses --region, also emit an HTML file"
+            if target_region is not None and i == target_region:
+                generate_html(grid, width, height, i)
+
         else:
             print(f"  -> FAILED")
             
+    # Modify the final print slightly to be robust if no regions run
+    if best_region_idx != -1:
+        print(f"Region with minimum steps: {best_region_idx} (Steps: {min_steps_successful})")
+    else:
+        # If running a single target region that wasn't the "best" in logic or failed, this might print -1.
+        pass
+
     return total_successful
 
 def main():
     parser = argparse.ArgumentParser(description="Advent of Code 2025 Day 12")
     parser.add_argument('--real', action='store_true', help="Use Real input (input.txt)")
+    parser.add_argument('--region', type=int, default=None, help="Specific region index to solve")
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -433,7 +524,7 @@ def main():
         print(f"Error: '{input_path}' not found.")
         return
 
-    result = solve_a(lines)
+    result = solve_a(lines, target_region=args.region)
     print(result)
 
 if __name__ == '__main__':
